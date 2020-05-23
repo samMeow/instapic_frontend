@@ -1,3 +1,6 @@
+export const RequestAction = {};
+export const SuccessAction = {};
+export const FailureAction = {};
 export default class AsyncAction {
   REQUEST = '_REQUEST';
 
@@ -27,4 +30,14 @@ export default class AsyncAction {
     error: e,
     request,
   });
+
+  toBase = () => AsyncAction.toBase(this.REQUEST);
+
+  static toBase = (x) => x.replace(/_(REQUEST|SUCCESS|FAILURE)$/, '');
+
+  static isRequestAction = (a) => /_REQUEST$/.test(a.type);
+
+  static isSuccessAction = (a) => /_SUCCESS$/.test(a.type);
+
+  static isFailureAction = (a) => /_FAILURE$/.test(a.type);
 }
