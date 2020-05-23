@@ -1,7 +1,15 @@
+import { Store } from 'redux';
+
 import APIFetcher, { APIFetcherConstructor } from './APIFetcher';
 
 class FetcherFactory {
+  store?: Store;
+
   dict = new WeakMap<APIFetcherConstructor<APIFetcher>, APIFetcher>();
+
+  bindStore(store: Store): void {
+    this.store = store;
+  }
 
   make<T extends APIFetcher>(Ins: APIFetcherConstructor<T>): T {
     if (!(Ins.prototype instanceof APIFetcher)) {
@@ -9,7 +17,8 @@ class FetcherFactory {
     }
     const fetcher = this.dict.get(Ins) as T;
     if (fetcher) return fetcher;
-    const f = new Ins({});
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const f = new Ins({ store: this.store! });
     this.dict.set(Ins, f);
     return f;
   }
