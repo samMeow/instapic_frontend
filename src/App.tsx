@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { isLoggedIn, isAuthInited } from 'modules/auth/selectors';
 
 import LoginPage from './containers/LoginPage';
+import SignUpPage from './containers/SignUpPage';
 
 const PublicRoute = (props: RouteProps): React.ReactElement => {
   const loggedIn = useSelector(isLoggedIn);
@@ -32,6 +33,7 @@ function App(): React.ReactElement | null {
   return (
     <Switch>
       <PublicRoute exact path="/login" component={LoginPage} />
+      <PublicRoute exact path="/register" component={SignUpPage} />
       <PrivateRoute exact path="/">
         Private
       </PrivateRoute>

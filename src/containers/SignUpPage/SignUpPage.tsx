@@ -6,9 +6,9 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import PublicLayout from 'components/PublicLayout';
 import Slogan from 'components/Slogan';
-import { login } from 'modules/auth/actions';
+import { signUp } from 'modules/auth/actions';
 import { getLoading } from 'modules/loading';
-import { getFormErrorMessage, resetForm } from 'modules/form';
+import { getFormErrorMessage, getFormSuccess, resetForm } from 'modules/form';
 import { curryRight2 } from 'utils/fn';
 import { RootState } from 'rootReducer';
 
@@ -29,7 +29,6 @@ const Form = styled.form`
     margin: 0.5rem 0;
   }
 `;
-
 const Description = styled.div`
   font-size: 0.8rem;
   text-align: left;
@@ -40,14 +39,21 @@ const ErrorMessage = styled.div`
   color: red;
   font-size: 0.8rem;
 `;
+const SuccessMessage = styled.div`
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: green;
+`;
 const ButtonSlot = styled.div`
   margin-top: 2rem;
   width: 100%;
   text-align: right;
 `;
 
-const getLoginLoading = (state: RootState): boolean => getLoading(state, login);
-const getLoginError = curryRight2(getFormErrorMessage)('loginForm');
+const getSignUpLoading = (state: RootState): boolean =>
+  getLoading(state, signUp);
+const getSignUpError = curryRight2(getFormErrorMessage)('signUpForm');
+const getSignUpSuccess = curryRight2(getFormSuccess)('signUpForm');
 
 type FormField = {
   value: string;
@@ -58,20 +64,22 @@ interface State {
   password: FormField;
   [k: string]: FormField;
 }
+const INIT_STATE = {
+  username: {
+    value: '',
+    error: '',
+  },
+  password: {
+    value: '',
+    error: '',
+  },
+};
 const LoginPage = (): React.ReactElement => {
-  const [form, setForm] = useState<State>({
-    username: {
-      value: '',
-      error: '',
-    },
-    password: {
-      value: '',
-      error: '',
-    },
-  });
+  const [form, setForm] = useState<State>(INIT_STATE);
   const dispatch = useDispatch();
-  const loading = useSelector(getLoginLoading);
-  const errorMessage = useSelector(getLoginError);
+  const loading = useSelector(getSignUpLoading);
+  const errorMessage = useSelector(getSignUpError);
+  const success = useSelector(getSignUpSuccess);
 
   const validate = useCallback((newForm: State): Record<string, string> => {
     const errors: Record<string, string> = {};
@@ -119,11 +127,12 @@ const LoginPage = (): React.ReactElement => {
         return;
       }
       dispatch(
-        login.request({
+        signUp.request({
           username: form.username.value,
           password: form.password.value,
         }),
       );
+      setForm(INIT_STATE);
     },
     [form, setForm, dispatch, validate],
   );
@@ -138,11 +147,11 @@ const LoginPage = (): React.ReactElement => {
     <PublicLayout>
       <Container>
         <Slogan />
-        <Title>Login Here</Title>
+        <Title>Register Now</Title>
         <Form onSubmit={handleSubmit} autoComplete="false">
           <StyledTextField
             name="username"
-            label="Username"
+            label="New Username"
             onChange={handleChange}
             variant="outlined"
             error={form.username.error.length > 0}
@@ -150,7 +159,7 @@ const LoginPage = (): React.ReactElement => {
           />
           <StyledTextField
             name="password"
-            label="Password"
+            label="New Password"
             type="password"
             onChange={handleChange}
             variant="outlined"
@@ -159,12 +168,13 @@ const LoginPage = (): React.ReactElement => {
           />
           <Description>
             {/* eslint-disable-next-line react/jsx-one-expression-per-line */}
-            Not yet a member? <Link to="/register">Sign Up here!</Link>
+            Already a member? <Link to="/login">Login now!</Link>
           </Description>
+          {success && <SuccessMessage>Successfully Register</SuccessMessage>}
           <ErrorMessage>{errorMessage}</ErrorMessage>
           <ButtonSlot>
             <Button type="submit" disabled={loading}>
-              Login
+              Sign Up
             </Button>
           </ButtonSlot>
         </Form>
