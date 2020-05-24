@@ -18,14 +18,14 @@ const INIT_STATE: State = {};
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getLoading = <T = any>(
   state: { loading: State },
-  action: AsyncAction,
+  action: AsyncAction<T>,
   subkey?: T,
 ): boolean => {
   let key = action.toBase();
   if (subkey) {
     key = `${key}${JSON.stringify(subkey)}`;
   }
-  return state.loading[key]?.loading;
+  return state.loading[key]?.loading || false;
 };
 
 // ===== reducer =====

@@ -2,7 +2,7 @@ import md5 from 'md5';
 
 import FetcherFactory from 'utils/FetcherFactory';
 
-import InstaPicFetcher from '../InstaPicFetcher';
+import AuthFetcher from '../AuthFetcher';
 
 export type LoginResponse = {
   status: string;
@@ -17,7 +17,7 @@ const login = async (
   username: string,
   password: string,
 ): Promise<LoginResponse> => {
-  const fetcher = FetcherFactory.make(InstaPicFetcher);
+  const fetcher = FetcherFactory.make(AuthFetcher);
   const response = await fetcher.json().post('/auth/login', {
     username,
     password: md5(password),
