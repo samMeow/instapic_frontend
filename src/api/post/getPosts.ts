@@ -13,7 +13,7 @@ type PostListRequest = {
   order: 'asc' | 'desc';
 };
 
-type PostListResponse = {
+export type PostListResponse = {
   data: Post[];
   meta: { has_next_page: boolean };
 };
