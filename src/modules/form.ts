@@ -18,7 +18,7 @@ export interface State {
   createPostForm: FormStatus;
   loginForm: FormStatus;
 }
-export const INIT_STATE = {
+export const INIT_STATE: State = {
   signUpForm: {
     success: false,
     errorMessage: '',
@@ -154,7 +154,7 @@ const onSetFormError = (
   },
 });
 
-export default function reducer(state: State, action: Action): State {
+export default function reducer(state = INIT_STATE, action: Action): State {
   switch (action.type) {
     case signUp.SUCCESS:
       return onSignUpSuccess(state);

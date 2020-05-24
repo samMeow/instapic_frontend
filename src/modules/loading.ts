@@ -18,7 +18,8 @@ const INIT_STATE: State = {};
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getLoading = <T = any>(
   state: { loading: State },
-  action: AsyncAction<T>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  action: AsyncAction<T, any>,
   subkey?: T,
 ): boolean => {
   let key = action.toBase();

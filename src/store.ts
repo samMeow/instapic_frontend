@@ -3,6 +3,7 @@ import { createStore, applyMiddleware, compose, Store } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 
 import FetcherFactory from 'utils/FetcherFactory';
+import { initAuth } from 'modules/auth/actions';
 
 import rootSaga from './rootSaga';
 import reducers, { RootState } from './rootReducer';
@@ -29,6 +30,7 @@ export default async (): Promise<Store<RootState>> => {
 
   FetcherFactory.bindStore(store);
   sagaMiddleware.run(rootSaga);
+  store.dispatch(initAuth.do());
 
   if (module.hot) {
     module.hot.accept('./rootReducer', () => {
