@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import styled from 'styled-components/macro';
 import { Button } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import { getUsername } from 'modules/auth/selectors';
 import { logout } from 'modules/auth/actions';
@@ -27,8 +28,10 @@ const InnerContainer = styled.div`
     width: ${size.tabletL};
   }
 `;
-const Left = styled.div`
+const Left = styled(Link)`
   font-size: 1.2rem;
+  color: black;
+  text-decoration: none;
 `;
 const Right = styled.div`
   display: flex;
@@ -49,7 +52,7 @@ const Header = (): React.ReactElement => {
   return (
     <Container>
       <InnerContainer>
-        <Left>InstaPic</Left>
+        <Left to="/">InstaPic</Left>
         <Right>
           <RightText>{username}</RightText>
           <Button onClick={handleLogoutClick}>Logout</Button>

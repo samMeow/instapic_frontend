@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/macro';
+import { useParams, Redirect } from 'react-router-dom';
 
 import Header from 'containers/Header';
 import PostList from 'containers/PostList';
@@ -22,15 +23,19 @@ const ListContainer = styled.div`
   }
 `;
 
-const PostPage = (): React.ReactElement => {
+const UserPage = (): React.ReactElement => {
+  const { userId } = useParams();
+  if (Number(userId) < 1) {
+    return <Redirect to="/" />;
+  }
   return (
     <Container>
       <Header />
       <ListContainer>
-        <PostList withCreate />
+        <PostList userId={Number(userId)} />
       </ListContainer>
     </Container>
   );
 };
 
-export default PostPage;
+export default UserPage;

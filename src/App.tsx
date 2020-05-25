@@ -8,6 +8,7 @@ import LoginPage from './containers/LoginPage';
 import SignUpPage from './containers/SignUpPage';
 
 const LazyPostPage = React.lazy(() => import('./containers/PostsPage'));
+const LazyUserPage = React.lazy(() => import('./containers/UserPage'));
 
 const PublicRoute = (props: RouteProps): React.ReactElement => {
   const loggedIn = useSelector(isLoggedIn);
@@ -41,6 +42,7 @@ function App(): React.ReactElement {
         <PublicRoute exact path="/login" component={LoginPage} />
         <PublicRoute exact path="/register" component={SignUpPage} />
         <PrivateRoute exact path="/" component={LazyPostPage} />
+        <PrivateRoute exact path="/users/:userId" component={LazyUserPage} />
         <Route>
           <Redirect to="/" />
         </Route>

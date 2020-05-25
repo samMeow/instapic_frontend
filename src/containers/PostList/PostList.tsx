@@ -56,7 +56,14 @@ const getFetchLoading = (state: RootState): boolean =>
 const getCreateLoading = (state: RootState): boolean =>
   getLoading(state, createPost);
 
-const PostList = (): React.ReactElement => {
+type PostListProps = {
+  withCreate?: boolean;
+  userId?: number;
+};
+const PostList = ({
+  withCreate = false,
+  userId,
+}: PostListProps): React.ReactElement => {
   const [pageNum, setPageNum] = useState(0);
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const dispatch = useDispatch();
@@ -68,12 +75,18 @@ const PostList = (): React.ReactElement => {
   useEffect(() => {
     dispatch(
       getPosts.request({
-        filters: {},
+        filters: userId ? { userIds: [userId] } : {},
         page: { size: PAGE_SIZE, number: pageNum },
         sort: { sort: 'create_time', order },
       }),
     );
-  }, [dispatch, order, pageNum]);
+  }, [dispatch, order, pageNum, userId]);
+  // onUnmount
+  useEffect(() => {
+    return () => {
+      dispatch(resetPostList.do());
+    };
+  }, [dispatch]);
 
   const handleSortChange = useCallback(
     (e: React.ChangeEvent<{ value: unknown }>) => {
@@ -101,7 +114,7 @@ const PostList = (): React.ReactElement => {
 
   return (
     <Container>
-      <CreatePostForm onSubmit={handleSubmit} />
+      {withCreate && <CreatePostForm onSubmit={handleSubmit} />}
       <SortContainer>
         <FormControl>
           <InputLabel id="post-sorting">Sorting</InputLabel>
@@ -117,9 +130,11 @@ const PostList = (): React.ReactElement => {
       </SortContainer>
       <ListContainer>
         {creating && <div>Uploading...</div>}
+        {postList.length === 0 && <h1>No Post</h1>}
         {postList.map((post) => (
           <ListItem key={post.id}>
             <PostCard
+              userId={post.user_id}
               username={post.user.username}
               createTime={post.create_time}
               description={post.description}

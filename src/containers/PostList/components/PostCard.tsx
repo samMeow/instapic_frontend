@@ -2,6 +2,7 @@ import React from 'react';
 import { Card } from '@material-ui/core';
 import styled from 'styled-components/macro';
 import { isThisWeek, formatDistanceToNow, format } from 'date-fns';
+import { Link } from 'react-router-dom';
 
 const StyledCard = styled(Card)`
   border-radius: 0.5rem;
@@ -11,10 +12,12 @@ const StyledCard = styled(Card)`
 const Header = styled.div`
   margin: 0.5rem 0;
 `;
-const Name = styled.span`
+const Name = styled(Link)`
   margin-right: 1rem;
   font-size: 1.1rem;
   font-weight: bold;
+  text-decoration: none;
+  color: black;
 `;
 const Time = styled.span`
   font-size: 0.8rem;
@@ -37,6 +40,7 @@ const Video = styled.video`
 `;
 
 type PostCardProps = {
+  userId: number;
   username: string;
   createTime: string;
   description: string;
@@ -44,6 +48,7 @@ type PostCardProps = {
   mediaPath?: string;
 };
 const PostCard = ({
+  userId,
   username,
   createTime,
   description,
@@ -69,7 +74,7 @@ const PostCard = ({
   return (
     <StyledCard>
       <Header>
-        <Name>{username}</Name>
+        <Name to={`/users/${userId}`}>{username}</Name>
         <Time>{displayTime}</Time>
       </Header>
       <Description>{description}</Description>
