@@ -65,23 +65,29 @@ const CreatePostForm = ({
     },
     [form, setForm],
   );
+  const validateFile = useCallback((file: File): string => {
+    if (!file.type.startsWith('video') && !file.type.startsWith('image')) {
+      return 'Post only accept video / image';
+    }
+    if (file.size > 3 * 1024 * 1024) {
+      return 'Media cannot be > 3MB';
+    }
+    return '';
+  }, []);
   const handleFileChange = useCallback(
     (e) => {
       if (!e.target.files[0]) {
         return;
       }
       const media = e.target.files[0];
-      if (!media.type.startsWith('video') && !media.type.startsWith('image')) {
-        toast.error('Post only accept video / image');
-        return;
-      }
-      if (media.size > 3 * 1024 * 1024) {
-        toast.error('Media cannot be > 3MB');
+      const error = validateFile(media);
+      if (error) {
+        toast.error(error);
         return;
       }
       setForm({ ...form, media });
     },
-    [form, setForm],
+    [form, setForm, validateFile],
   );
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
@@ -91,9 +97,34 @@ const CreatePostForm = ({
     },
     [onSubmit, form, setForm],
   );
+  const handleFileDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      if (!e.dataTransfer.items) {
+        return;
+      }
+      if (e.dataTransfer.items.length !== 1) {
+        toast.error('Only support one file at a time');
+        return;
+      }
+      const media = e.dataTransfer.items[0].getAsFile() as File;
+      const error = validateFile(media);
+      if (error) {
+        toast.error(error);
+        return;
+      }
+      setForm({ ...form, media });
+    },
+    [form, setForm, validateFile],
+  );
 
   return (
-    <StyledForm className={className} onSubmit={handleSubmit}>
+    <StyledForm
+      className={className}
+      onSubmit={handleSubmit}
+      onDrop={handleFileDrop}
+      // onDragOver={console.log}
+    >
       <StyledInput
         name="description"
         multiline

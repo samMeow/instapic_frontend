@@ -1,5 +1,6 @@
 import { Action } from 'redux';
-import { takeEvery } from 'redux-saga/effects';
+import { takeEvery, call } from 'redux-saga/effects';
+import { toast } from 'react-toastify';
 
 import AsyncAction from 'utils/AsyncAction';
 import SyncAction from 'utils/SyncAction';
@@ -71,11 +72,18 @@ export const handleCreatePost = fetchHandler(
   createPostAPI,
   ({ description, media }) => [description, media],
 );
+export function* handleGetPostsFail({
+  error,
+}: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+ReturnType<typeof getPosts.failure>): Iterator<any> {
+  yield call([toast, 'error'], error.message);
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function* saga(): Iterator<any> {
   yield takeEvery(getPosts.REQUEST, handleGetPosts);
   yield takeEvery(createPost.REQUEST, handleCreatePost);
+  yield takeEvery(getPosts.FAILURE, handleGetPostsFail);
 }
 
 // ===== reducer =====

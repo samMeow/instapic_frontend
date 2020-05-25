@@ -152,6 +152,7 @@ const LoginPage = (): React.ReactElement => {
           <StyledTextField
             name="username"
             label="New Username"
+            value={form.username.value}
             onChange={handleChange}
             variant="outlined"
             error={form.username.error.length > 0}
@@ -161,6 +162,7 @@ const LoginPage = (): React.ReactElement => {
             name="password"
             label="New Password"
             type="password"
+            value={form.password.value}
             onChange={handleChange}
             variant="outlined"
             error={form.password.error.length > 0}

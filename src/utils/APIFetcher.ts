@@ -105,6 +105,7 @@ export default class APIFetcher implements FetchBuilder {
     const url = `${this.baseURL}${path}${query}`;
     const controller = new AbortController();
     // TODO: allow outer method to have control on cancellation
+    // browser specific bug upload file fail to abort
     setTimeout(() => controller.abort(), this.timeout);
     const result = await fetch(url, {
       method,

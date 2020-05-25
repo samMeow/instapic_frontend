@@ -30,10 +30,14 @@ const createPost = async (
   media: File | null,
 ): Promise<CreatePostResponse> => {
   const fetcher = FetcherFactory.make(InstaPicFetcher);
-  const response = await fetcher.withAuth().form().post('/posts', {
-    description,
-    media,
-  });
+  const response = await fetcher
+    .withAuth()
+    .form()
+    .withTimeout(30000) // 30s
+    .post('/posts', {
+      description,
+      media,
+    });
   const result = await response.json();
   return result;
 };

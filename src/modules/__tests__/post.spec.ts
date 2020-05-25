@@ -1,5 +1,6 @@
 import { expectSaga } from 'redux-saga-test-plan';
 import { call } from 'redux-saga-test-plan/matchers';
+import { toast } from 'react-toastify';
 
 import getPostsAPI from 'api/post/getPosts';
 import createPostAPI, { Post } from 'api/post/createPost';
@@ -13,6 +14,7 @@ import reducer, {
   handleCreatePost,
   saga,
   getPostList,
+  handleGetPostsFail,
 } from '../post';
 
 describe('modules/post', () => {
@@ -124,6 +126,16 @@ describe('modules/post', () => {
       return expectSaga(handleCreatePost, createPost.request(request))
         .provide([[call.fn(createPostAPI), null]])
         .call(createPostAPI, request.description, request.media)
+        .run();
+    });
+
+    it('should call toast when get posts error', () => {
+      return expectSaga(
+        handleGetPostsFail,
+        getPosts.failure(new Error('wrong')),
+      )
+        .provide([[call.fn(toast), null]])
+        .call([toast, 'error'], 'wrong')
         .run();
     });
   });
