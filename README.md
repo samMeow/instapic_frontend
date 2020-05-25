@@ -15,3 +15,7 @@ yarn test
 # linting
 yarn lint
 ```
+3. Integration Test (start app first)
+```
+yarn test:integration
+```

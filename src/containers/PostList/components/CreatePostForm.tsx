@@ -123,7 +123,7 @@ const CreatePostForm = ({
       className={className}
       onSubmit={handleSubmit}
       onDrop={handleFileDrop}
-      // onDragOver={console.log}
+      data-testid="create-post-form"
     >
       <StyledInput
         name="description"

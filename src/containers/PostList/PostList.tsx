@@ -128,7 +128,7 @@ const PostList = ({
           </Select>
         </FormControl>
       </SortContainer>
-      <ListContainer>
+      <ListContainer data-testid="post-list">
         {creating && <div>Uploading...</div>}
         {postList.length === 0 && !loading && <h1>No Post</h1>}
         {postList.map((post) => (
