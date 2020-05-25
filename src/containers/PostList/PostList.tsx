@@ -130,7 +130,7 @@ const PostList = ({
       </SortContainer>
       <ListContainer>
         {creating && <div>Uploading...</div>}
-        {postList.length === 0 && <h1>No Post</h1>}
+        {postList.length === 0 && !loading && <h1>No Post</h1>}
         {postList.map((post) => (
           <ListItem key={post.id}>
             <PostCard
