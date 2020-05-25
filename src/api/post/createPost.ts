@@ -9,7 +9,7 @@ export type Post = {
   medias: {
     id: number;
     post_id: number;
-    media_type: number;
+    media_type: string;
     path: string;
     create_time: string;
   }[];
@@ -21,7 +21,14 @@ export type Post = {
   };
 };
 
-const createPost = async (description: string, media: File): Promise<Post> => {
+export type CreatePostResponse = {
+  data: Post;
+};
+
+const createPost = async (
+  description: string,
+  media: File | null,
+): Promise<CreatePostResponse> => {
   const fetcher = FetcherFactory.make(InstaPicFetcher);
   const response = await fetcher.withAuth().form().post('/posts', {
     description,

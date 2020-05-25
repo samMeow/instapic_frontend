@@ -74,7 +74,7 @@ describe('modules/post', () => {
     });
 
     it('should add post to tempList after create Post success', () => {
-      const final = reducer(INIT_STATE, createPost.success(post1));
+      const final = reducer(INIT_STATE, createPost.success({ data: post1 }));
       expect(final).toMatchObject({
         ui: {
           tempList: [post1.id],

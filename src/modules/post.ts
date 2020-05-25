@@ -5,7 +5,7 @@ import AsyncAction from 'utils/AsyncAction';
 import SyncAction from 'utils/SyncAction';
 
 import getPostsAPI, { PostListResponse } from 'api/post/getPosts';
-import createPostAPI, { Post } from 'api/post/createPost';
+import createPostAPI, { Post, CreatePostResponse } from 'api/post/createPost';
 import { fetchHandler } from 'utils/sagaHelper';
 
 export interface State {
@@ -38,11 +38,12 @@ export const getPosts = new AsyncAction<GetPostsRequest, PostListResponse>(
 );
 interface CreatePostRequest {
   description: string;
-  media: File;
+  media: File | null;
 }
-export const createPost = new AsyncAction<CreatePostRequest, Post>(
-  'CREATE_POST',
-);
+export const createPost = new AsyncAction<
+  CreatePostRequest,
+  CreatePostResponse
+>('CREATE_POST');
 export const resetPostList = new SyncAction('RESET_POST_LIST');
 
 // ===== selector =====
@@ -109,16 +110,16 @@ const onGetPostsSuccess = (
 
 const onCreatePostSuccess = (
   state: State,
-  { payload }: ReturnType<typeof createPost.success>,
+  { payload: { data } }: ReturnType<typeof createPost.success>,
 ): State => ({
   ...state,
   ui: {
     ...state.ui,
-    tempList: [payload.id, ...state.ui.tempList],
+    tempList: [data.id, ...state.ui.tempList],
   },
   dict: {
     ...state.dict,
-    [payload.id]: payload,
+    [data.id]: data,
   },
 });
 

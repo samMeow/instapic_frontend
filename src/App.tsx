@@ -2,9 +2,12 @@ import React from 'react';
 import { Switch, Route, Redirect, RouteProps } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { isLoggedIn, isAuthInited } from 'modules/auth/selectors';
+import { ToastContainer } from 'react-toastify';
 
 import LoginPage from './containers/LoginPage';
 import SignUpPage from './containers/SignUpPage';
+
+const LazyPostPage = React.lazy(() => import('./containers/PostsPage'));
 
 const PublicRoute = (props: RouteProps): React.ReactElement => {
   const loggedIn = useSelector(isLoggedIn);
@@ -24,23 +27,26 @@ const PrivateRoute = (props: RouteProps): React.ReactElement => {
   return <Route {...props} />;
 };
 
-function App(): React.ReactElement | null {
+const AppLoading = (): React.ReactElement => <h1>Loading...</h1>;
+
+function App(): React.ReactElement {
   const inited = useSelector(isAuthInited);
   if (!inited) {
     // TODO: App loading component
-    return null;
+    return <AppLoading />;
   }
   return (
-    <Switch>
-      <PublicRoute exact path="/login" component={LoginPage} />
-      <PublicRoute exact path="/register" component={SignUpPage} />
-      <PrivateRoute exact path="/">
-        Private
-      </PrivateRoute>
-      <Route>
-        <Redirect to="/" />
-      </Route>
-    </Switch>
+    <React.Suspense fallback={<AppLoading />}>
+      <Switch>
+        <PublicRoute exact path="/login" component={LoginPage} />
+        <PublicRoute exact path="/register" component={SignUpPage} />
+        <PrivateRoute exact path="/" component={LazyPostPage} />
+        <Route>
+          <Redirect to="/" />
+        </Route>
+      </Switch>
+      <ToastContainer />
+    </React.Suspense>
   );
 }
 
